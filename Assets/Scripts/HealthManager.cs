@@ -11,7 +11,7 @@ public class HealthManager : MonoBehaviour
     [SerializeField] private string winSceneName = "Win";
     [SerializeField] private string gameOverSceneName = "GameOver";
 
-private bool gameEnded = false;
+    private bool gameEnded = false;
 
     public int PlayerHP { get; private set; }
     public int EnemyHP { get; private set; }
@@ -37,9 +37,9 @@ private bool gameEnded = false;
         }
 
         OnHpChanged?.Invoke(PlayerHP, EnemyHP);
-        
         CheckEndGame();
     }
+
     private void CheckEndGame()
     {
         if (gameEnded) return;
@@ -54,5 +54,14 @@ private bool gameEnded = false;
             gameEnded = true;
             SceneManager.LoadScene(gameOverSceneName);
         }
+    }
+
+    public void ForceLose()
+    {
+        if (gameEnded) return;
+
+        PlayerHP = 0;
+        OnHpChanged?.Invoke(PlayerHP, EnemyHP);
+        CheckEndGame();
     }
 }

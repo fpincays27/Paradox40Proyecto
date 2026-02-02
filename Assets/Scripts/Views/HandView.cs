@@ -26,13 +26,17 @@ public class HandView : MonoBehaviour
 
     [SerializeField] private Transform faceDownAnchor;
 
+    [Header("Health")]
+    [SerializeField] private HealthManager health;
+
     private readonly List<GameObject> handCards = new();
     private readonly List<FaceDownCard> faceDownCards = new();
 
     private int drawsCount = 0;   // cuántas cartas robaste
     private int flipTokens = 0;   // 1 token por cada 3 robos
 
-    [SerializeField] private HealthManager health;
+    // Para que el GameOver por “sin matches” se dispare una sola vez
+    private bool noMatchGameEnded = false;
 
     private void Start()
     {
@@ -75,6 +79,9 @@ public class HandView : MonoBehaviour
 
         // 3) Carta enfrente (boca abajo)
         SpawnFaceDownCard();
+
+        // ✅ Chequeo de derrota: sin matches + todo revelado
+        CheckNoMatchLoseCondition();
     }
 
     private void SpawnFaceDownCard()
@@ -83,11 +90,11 @@ public class HandView : MonoBehaviour
         int index = Random.Range(0, cardSprites.Count);
         Sprite hiddenFront = cardSprites[index];
 
-        // Centro frente a la mano (t=0.5 del spline)
-       Vector3 center = splineContainer.Spline.EvaluatePosition(0.5f);
-       center.x += tableOffsetX;   // ← AQUÍ se mueve en X
-       center.y += tableOffsetY;
-       center.z = zVisible;
+        // Centro frente a la mano
+        Vector3 center = splineContainer.Spline.EvaluatePosition(0.5f);
+        center.x += tableOffsetX;
+        center.y += tableOffsetY;
+        center.z = zVisible;
 
         // Fila centrada
         float totalWidth = faceDownCards.Count * tableSpacing;
@@ -98,7 +105,6 @@ public class HandView : MonoBehaviour
         GameObject downGO = Instantiate(cardPrefab, spawnPoint.position, spawnPoint.rotation);
         downGO.transform.rotation = Quaternion.identity;
 
-        // Asegura componente FaceDownCard
         FaceDownCard fdc = downGO.GetComponent<FaceDownCard>();
         if (fdc == null) fdc = downGO.AddComponent<FaceDownCard>();
 
@@ -107,6 +113,8 @@ public class HandView : MonoBehaviour
         downGO.transform.DOMove(targetPos, 0.25f);
 
         faceDownCards.Add(fdc);
+    
+        LayoutFaceDownRow();
     }
 
     public void TryFlip(FaceDownCard card)
@@ -124,6 +132,9 @@ public class HandView : MonoBehaviour
         card.Flip();
 
         UpdateFlipUI();
+
+        // Chequeo de derrota: sin matches + todo revelado
+        CheckNoMatchLoseCondition();
     }
 
     private void UpdateFlipUI()
@@ -151,6 +162,8 @@ public class HandView : MonoBehaviour
 
         for (int i = 0; i < handCards.Count; i++)
         {
+            if (handCards[i] == null) continue;
+
             float p = Mathf.Clamp01(firstCardPosition + i * cardSpacing);
 
             Vector3 splinePosition = spline.EvaluatePosition(p);
@@ -164,90 +177,162 @@ public class HandView : MonoBehaviour
             handCards[i].transform.DOLocalRotateQuaternion(rotation, 0.25f);
         }
     }
+
     public bool TryDropHandCardOnFaceDown(CardView handCard, Vector3 originalPos, Quaternion originalRot)
     {
         if (handCard == null) return false;
-        
+
         Vector3 world = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector2 p = new Vector2(world.x, world.y);
 
         Collider2D[] hits = Physics2D.OverlapPointAll(p);
         FaceDownCard down = null;
-        
+
         for (int i = 0; i < hits.Length; i++)
         {
             down = hits[i].GetComponentInParent<FaceDownCard>();
             if (down != null) break;
         }
-        
+
         if (down == null) return false;
-        
-        // Si estaba boca abajo, flípeala
+
+        // Si estaba boca abajo, flípeala (esto NO consume token)
         if (down.IsFaceDown)
-        down.Flip();
-        
+            down.Flip();
+
         Sprite a = handCard.CurrentSprite;
         Sprite b = down.FrontSprite;
-        
+
         Debug.Log($"DROP: hand={a?.name} vs down={b?.name}");
-        
+
+        // MATCH por NOMBRE (evita el bug de “todo hace match”)
         if (a != null && b != null && a.name == b.name)
         {
             // Daño al enemigo
             health?.ApplyMatchResult(true);
-            
+
             // Descartar ambas al mazo
             ReturnToDeck(handCard.gameObject, a);
             ReturnToDeck(down.gameObject, b);
-            
+
             handCards.Remove(handCard.gameObject);
             faceDownCards.Remove(down);
-            
+
             UpdateCardPositions();
             LayoutFaceDownRow();
-            
-            return true; // acción consumida
+
+            // Chequeo derrota: sin matches + todo revelado
+            CheckNoMatchLoseCondition();
+
+            return true; // consumida
         }
-        
-        //  NO MATCH
         else
         {
             // Daño al jugador
             health?.ApplyMatchResult(false);
-            
+
             // La carta de la mano vuelve a su lugar (drag lo hará)
-            // La boca abajo se queda revelada
             UpdateCardPositions();
-            return false; // no se consumió, vuelve a la mano
+
+            CheckNoMatchLoseCondition();
+
+            return false;
         }
     }
 
     private void ReturnToDeck(GameObject cardGO, Sprite returnedSprite)
     {
-        // devuelve sprite al deck para poder robarlo otra vez
-        if (returnedSprite != null)
-        cardSprites.Add(returnedSprite);
-        
+        if (cardGO == null) return;
+
+        // devuelve sprite al deck
+        if (returnedSprite != null && cardSprites != null)
+            cardSprites.Add(returnedSprite);
+
         // animación al spawnPoint y destruir
         cardGO.transform.DOMove(spawnPoint.position, 0.25f).OnComplete(() =>
         {
             Destroy(cardGO);
         });
     }
+
     private void LayoutFaceDownRow()
     {
-        // centra y separa las boca abajo (usa tus offsets)
+        if (faceDownAnchor == null) return;
+
         Vector3 center = faceDownAnchor.position;
         center.x += tableOffsetX;
         center.y += tableOffsetY;
         center.z = zVisible;
-        
+
         int n = faceDownCards.Count;
+
         for (int i = 0; i < n; i++)
         {
+            if (faceDownCards[i] == null) continue;
+
             float x = (i - (n - 1) * 0.5f) * tableSpacing;
             Vector3 target = center + Vector3.right * x;
             faceDownCards[i].transform.DOMove(target, 0.25f);
         }
+    }
+
+    private void CheckNoMatchLoseCondition()
+    {
+        if (noMatchGameEnded) return;
+        if (health == null) return;
+
+        // 1) Si todavía existe algún match posible -> NO pierde
+        if (HasAnyPossibleMatch())
+            return;
+
+        // 2) Si todavía hay alguna carta boca abajo sin revelar -> NO pierde
+        if (!AllFaceDownAreRevealed())
+            return;
+
+        // Se cumple: sin matches + todo revelado
+        noMatchGameEnded = true;
+        Debug.Log("GAME OVER: No hay matches posibles y todas las cartas están reveladas.");
+
+        health.ForceLose();
+    }
+
+    private bool AllFaceDownAreRevealed()
+    {
+        for (int i = 0; i < faceDownCards.Count; i++)
+        {
+            if (faceDownCards[i] == null) continue;
+            if (faceDownCards[i].IsFaceDown) return false;
         }
+        return true;
+    }
+
+    private bool HasAnyPossibleMatch()
+    {
+        if (handCards.Count == 0 || faceDownCards.Count == 0) return false;
+
+        for (int i = 0; i < handCards.Count; i++)
+        {
+            if (handCards[i] == null) continue;
+
+            CardView hv = handCards[i].GetComponent<CardView>();
+            if (hv == null) continue;
+
+            Sprite a = hv.CurrentSprite;
+            if (a == null) continue;
+
+            for (int j = 0; j < faceDownCards.Count; j++)
+            {
+                if (faceDownCards[j] == null) continue;
+
+                Sprite b = faceDownCards[j].FrontSprite;
+                if (b == null) continue;
+
+                // ✅ match por nombre (tu sistema actual)
+                if (a.name == b.name)
+                    return true;
+            }
+        }
+
+        return false;
+    }
 }
