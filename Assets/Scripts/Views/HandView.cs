@@ -23,7 +23,6 @@ public class HandView : MonoBehaviour
 
     [Header("UI Counter")]
     [SerializeField] private TextMeshProUGUI flipCounterText;
-
     [SerializeField] private Transform faceDownAnchor;
 
     [Header("Health")]
@@ -32,11 +31,12 @@ public class HandView : MonoBehaviour
     private readonly List<GameObject> handCards = new();
     private readonly List<FaceDownCard> faceDownCards = new();
 
-    private int drawsCount = 0;   // cuántas cartas robaste
-    private int flipTokens = 0;   // 1 token por cada 3 robos
+    private int drawsCount = 0;
+    private int flipTokens = 0;
 
-    // Para que el GameOver por “sin matches” se dispare una sola vez
     private bool noMatchGameEnded = false;
+
+    private bool inputLocked = false; // ✅ NUEVO
 
     private void Start()
     {
@@ -49,15 +49,27 @@ public class HandView : MonoBehaviour
             DrawCard();
     }
 
+    // ✅ NUEVO (para que RoundFlow bloquee el robo)
+    public void SetInputLocked(bool locked)
+    {
+        inputLocked = locked;
+    }
+
     private void DrawCard()
     {
+        // ✅ NO permitir robar si ya está bloqueado o el enemigo está en 0
+        if (inputLocked) return;
+        if (health != null && health.EnemyHP <= 0) return;
+
         if (handCards.Count >= maxHandSize) return;
         if (cardPrefab == null || spawnPoint == null || splineContainer == null) return;
         if (cardSprites == null || cardSprites.Count == 0) return;
         if (cardBackSprite == null) return;
 
-        // 1) Carta a la mano (boca arriba)
         GameObject g = Instantiate(cardPrefab, spawnPoint.position, spawnPoint.rotation);
+
+        // ✅ SFX: robar carta (SPACE)
+        SFXManager.I?.PlayDrawCard();
 
         int index = Random.Range(0, cardSprites.Count);
         Sprite s = cardSprites[index];
@@ -70,38 +82,29 @@ public class HandView : MonoBehaviour
         if (drag == null) drag = g.AddComponent<HandCardDrag>();
         drag.Init(this);
 
-        // 2) Contador de robos + token cada 3
         drawsCount++;
         if (drawsCount % 3 == 0)
             flipTokens++;
 
         UpdateFlipUI();
-
-        // 3) Carta enfrente (boca abajo)
         SpawnFaceDownCard();
-
-        // ✅ Chequeo de derrota: sin matches + todo revelado
         CheckNoMatchLoseCondition();
     }
 
     private void SpawnFaceDownCard()
     {
-        // “Qué carta será cuando se revele”
         int index = Random.Range(0, cardSprites.Count);
         Sprite hiddenFront = cardSprites[index];
 
-        // Centro frente a la mano
         Vector3 center = splineContainer.Spline.EvaluatePosition(0.5f);
         center.x += tableOffsetX;
         center.y += tableOffsetY;
         center.z = zVisible;
 
-        // Fila centrada
         float totalWidth = faceDownCards.Count * tableSpacing;
         Vector3 start = center - Vector3.right * (totalWidth * 0.5f);
         Vector3 targetPos = start + Vector3.right * (faceDownCards.Count * tableSpacing);
 
-        // Instancia en el mazo y vuela
         GameObject downGO = Instantiate(cardPrefab, spawnPoint.position, spawnPoint.rotation);
         downGO.transform.rotation = Quaternion.identity;
 
@@ -109,11 +112,9 @@ public class HandView : MonoBehaviour
         if (fdc == null) fdc = downGO.AddComponent<FaceDownCard>();
 
         fdc.Init(this, hiddenFront, cardBackSprite);
-
         downGO.transform.DOMove(targetPos, 0.25f);
 
         faceDownCards.Add(fdc);
-    
         LayoutFaceDownRow();
     }
 
@@ -129,11 +130,13 @@ public class HandView : MonoBehaviour
         }
 
         flipTokens--;
+
+        // ✅ SFX: flip de carta (solo si realmente va a voltear)
+        SFXManager.I?.PlayCardFlip();
+
         card.Flip();
 
         UpdateFlipUI();
-
-        // Chequeo de derrota: sin matches + todo revelado
         CheckNoMatchLoseCondition();
     }
 
@@ -196,7 +199,6 @@ public class HandView : MonoBehaviour
 
         if (down == null) return false;
 
-        // Si estaba boca abajo, flípeala (esto NO consume token)
         if (down.IsFaceDown)
             down.Flip();
 
@@ -205,13 +207,13 @@ public class HandView : MonoBehaviour
 
         Debug.Log($"DROP: hand={a?.name} vs down={b?.name}");
 
-        // MATCH por NOMBRE (evita el bug de “todo hace match”)
         if (a != null && b != null && a.name == b.name)
         {
-            // Daño al enemigo
+            // ✅ SFX: match (sin shuffle aquí)
+            SFXManager.I?.PlayMatch();
+
             health?.ApplyMatchResult(true);
 
-            // Descartar ambas al mazo
             ReturnToDeck(handCard.gameObject, a);
             ReturnToDeck(down.gameObject, b);
 
@@ -221,21 +223,18 @@ public class HandView : MonoBehaviour
             UpdateCardPositions();
             LayoutFaceDownRow();
 
-            // Chequeo derrota: sin matches + todo revelado
             CheckNoMatchLoseCondition();
-
-            return true; // consumida
+            return true;
         }
         else
         {
-            // Daño al jugador
+            // ✅ SFX: no match
+            SFXManager.I?.PlayNoMatch();
+
             health?.ApplyMatchResult(false);
 
-            // La carta de la mano vuelve a su lugar (drag lo hará)
             UpdateCardPositions();
-
             CheckNoMatchLoseCondition();
-
             return false;
         }
     }
@@ -244,11 +243,10 @@ public class HandView : MonoBehaviour
     {
         if (cardGO == null) return;
 
-        // devuelve sprite al deck
         if (returnedSprite != null && cardSprites != null)
             cardSprites.Add(returnedSprite);
 
-        // animación al spawnPoint y destruir
+        cardGO.transform.DOKill();
         cardGO.transform.DOMove(spawnPoint.position, 0.25f).OnComplete(() =>
         {
             Destroy(cardGO);
@@ -281,15 +279,16 @@ public class HandView : MonoBehaviour
         if (noMatchGameEnded) return;
         if (health == null) return;
 
-        // 1) Si todavía existe algún match posible -> NO pierde
+        // NUEVO: si el enemigo ya está muerto, NO aplicar esta condición
+        if (health.EnemyHP <= 0)
+            return;
+
         if (HasAnyPossibleMatch())
             return;
 
-        // 2) Si todavía hay alguna carta boca abajo sin revelar -> NO pierde
         if (!AllFaceDownAreRevealed())
             return;
 
-        // Se cumple: sin matches + todo revelado
         noMatchGameEnded = true;
         Debug.Log("GAME OVER: No hay matches posibles y todas las cartas están reveladas.");
 
@@ -327,12 +326,29 @@ public class HandView : MonoBehaviour
                 Sprite b = faceDownCards[j].FrontSprite;
                 if (b == null) continue;
 
-                // ✅ match por nombre (tu sistema actual)
                 if (a.name == b.name)
                     return true;
             }
         }
-
         return false;
+    }
+
+    public void ClearAllCards()
+    {
+        for (int i = 0; i < handCards.Count; i++)
+        {
+            if (handCards[i] == null) continue;
+            handCards[i].transform.DOKill();
+            Destroy(handCards[i]);
+        }
+        handCards.Clear();
+
+        for (int i = 0; i < faceDownCards.Count; i++)
+        {
+            if (faceDownCards[i] == null) continue;
+            faceDownCards[i].transform.DOKill();
+            Destroy(faceDownCards[i].gameObject);
+        }
+        faceDownCards.Clear();
     }
 }

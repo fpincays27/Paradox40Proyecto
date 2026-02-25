@@ -7,6 +7,10 @@ public class SceneButtons : MonoBehaviour
 
     public void RestartGame()
     {
+        // 🔄 Reiniciar todo el progreso
+        GameProgress.Instance?.ResetAll();
+
+        // 🔁 Cargar escena inicial
         SceneManager.LoadScene(gameSceneName);
     }
 

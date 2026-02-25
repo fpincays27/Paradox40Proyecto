@@ -7,19 +7,28 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 1
     path: Assets/Scenes/Portada.unity
-    guid: cb6d9c3d8faaa7f479fa5f8e8d3caee4
+    guid: 02975d725dd14c148a38b7a9af15aca9
   - enabled: 1
     path: Assets/Scenes/Tutorial.unity
     guid: dacdfc9eebe1d2348876f6dc35866fa5
   - enabled: 1
     path: Assets/Scenes/Ronda1.unity
+    guid: cb8381cb439b0fb4d8d19127b8ed2128
+  - enabled: 1
+    path: Assets/Scenes/SalonPrincipal.unity
+    guid: df84252da102d3a4b904b6f97f3a46f9
+  - enabled: 1
+    path: Assets/Scenes/Ronda2.unity
+    guid: a93fb8c7d4765544b95c2acb803dd7d5
+  - enabled: 0
+    path: Assets/Scenes/Ronda0.unity
     guid: ee3b9ae69b0798a40b372e0a12030463
   - enabled: 1
     path: Assets/Scenes/GameOver.unity
     guid: 5dcd9e013d840a14eaef69b33fa4d56f
   - enabled: 1
     path: Assets/Scenes/Win.unity
-    guid: e82da76ba8f5ed94fa427a544c3e7770
+    guid: a05041bbcd0c73343a98ded8fc6753a6
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

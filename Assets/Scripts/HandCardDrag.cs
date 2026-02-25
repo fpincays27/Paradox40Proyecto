@@ -27,7 +27,9 @@ public class HandCardDrag : MonoBehaviour
         originalPos = transform.position;
         originalRot = transform.rotation;
 
-        // sube la carta al arrastrar (SortingGroup o SpriteRenderer)
+        // ✅ SFX: iniciar drag (solo una vez)
+        SFXManager.I?.PlayDragCard();
+
         var sg = GetComponent<UnityEngine.Rendering.SortingGroup>();
         if (sg != null)
         {
@@ -66,12 +68,10 @@ public class HandCardDrag : MonoBehaviour
 
         if (!consumed)
         {
-            // vuelve a su lugar con animación
             transform.DOMove(originalPos, 0.2f);
             transform.DORotateQuaternion(originalRot, 0.2f);
         }
 
-        // restaurar orden
         var sg = GetComponent<UnityEngine.Rendering.SortingGroup>();
         if (sg != null) sg.sortingOrder = originalOrder;
         else
