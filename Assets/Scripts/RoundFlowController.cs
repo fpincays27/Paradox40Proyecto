@@ -227,12 +227,24 @@ public class RoundFlowController : MonoBehaviour
             SFXManager.I?.PlayWeaponSpawn();
         }
     }
-
+    
+    // RoundFlowController.OnChooseToken()
     public void OnChooseToken()
     {
+        Debug.Log($"[RoundFlow] OnChooseToken - GP null? {GameProgress.Instance == null}");
+        if (GameProgress.Instance != null)
+        Debug.Log($"[RoundFlow] Tokens antes: {GameProgress.Instance.Tokens}");
+            
+        
         HideChest();
+        
+        GameProgress.Instance?.GainToken(1);
+        
+        if (GameProgress.Instance != null)
+        Debug.Log($"[RoundFlow] Tokens despues: {GameProgress.Instance.Tokens}");
+        
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
+}
 
     private void HideChest()
     {

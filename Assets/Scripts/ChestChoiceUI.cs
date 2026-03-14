@@ -4,7 +4,6 @@ public class ChestChoiceUI : MonoBehaviour
 {
     private RoundFlowController flow;
 
-    // ❌ NO lo apagues en Awake, porque puede pisar un Show()
     private void Awake()
     {
         Debug.Log("[ChestChoiceUI] Awake");
@@ -20,17 +19,12 @@ public class ChestChoiceUI : MonoBehaviour
         Debug.Log("[ChestChoiceUI] OnDisable -> PANEL INACTIVO");
     }
 
-    // Mostrar panel
     public void Show(RoundFlowController flowController)
     {
         Debug.Log("[ChestChoiceUI] Show() llamado");
 
         flow = flowController;
-
-        // Activa panel
         gameObject.SetActive(true);
-
-        // Súbelo encima de todo en la UI
         transform.SetAsLastSibling();
     }
 
@@ -40,7 +34,6 @@ public class ChestChoiceUI : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    // Botón: “Tomar arma”
     public void ChooseWeapon()
     {
         Debug.Log("[ChestChoiceUI] ChooseWeapon()");
@@ -48,11 +41,17 @@ public class ChestChoiceUI : MonoBehaviour
         flow?.OnChooseWeapon();
     }
 
-    // Botón: “Tomar token”
-    public void ChooseLifeToken()
+    // Nuevo nombre genérico
+    public void ChooseToken()
     {
-        Debug.Log("[ChestChoiceUI] ChooseLifeToken()");
+        Debug.Log("[ChestChoiceUI] ChooseToken()");
         Hide();
         flow?.OnChooseToken();
+    }
+
+    // Compatibilidad con bindings antiguos en el Inspector
+    public void ChooseLifeToken()
+    {
+        ChooseToken();
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Splines;
 using DG.Tweening;
@@ -23,10 +24,16 @@ public class HandView : MonoBehaviour
 
     [Header("UI Counter")]
     [SerializeField] private TextMeshProUGUI flipCounterText;
+    [SerializeField] private TextMeshProUGUI tokenCounterText;
     [SerializeField] private Transform faceDownAnchor;
 
     [Header("Health")]
     [SerializeField] private HealthManager health;
+
+    [Header("Card Destroy Animation")]
+    [SerializeField] private float returnToDeckTime = 0.25f;
+    [SerializeField] private float destroyScaleTime = 0.18f;
+    [SerializeField] private float destroyFadeTime = 0.18f;
 
     private readonly List<GameObject> handCards = new();
     private readonly List<FaceDownCard> faceDownCards = new();
@@ -35,12 +42,25 @@ public class HandView : MonoBehaviour
     private int flipTokens = 0;
 
     private bool noMatchGameEnded = false;
-
-    private bool inputLocked = false; // ✅ NUEVO
+    private bool inputLocked = false;
 
     private void Start()
     {
+        if (GameProgress.Instance != null)
+            GameProgress.Instance.OnTokensChanged += OnTokensChanged;
+
         UpdateFlipUI();
+    }
+
+    private void OnDestroy()
+    {
+        if (GameProgress.Instance != null)
+            GameProgress.Instance.OnTokensChanged -= OnTokensChanged;
+    }
+
+    private void OnTokensChanged(int currentTokens)
+    {
+        UpdateTokenUI();
     }
 
     private void Update()
@@ -49,7 +69,6 @@ public class HandView : MonoBehaviour
             DrawCard();
     }
 
-    // ✅ NUEVO (para que RoundFlow bloquee el robo)
     public void SetInputLocked(bool locked)
     {
         inputLocked = locked;
@@ -57,7 +76,6 @@ public class HandView : MonoBehaviour
 
     private void DrawCard()
     {
-        // ✅ NO permitir robar si ya está bloqueado o el enemigo está en 0
         if (inputLocked) return;
         if (health != null && health.EnemyHP <= 0) return;
 
@@ -68,7 +86,6 @@ public class HandView : MonoBehaviour
 
         GameObject g = Instantiate(cardPrefab, spawnPoint.position, spawnPoint.rotation);
 
-        // ✅ SFX: robar carta (SPACE)
         SFXManager.I?.PlayDrawCard();
 
         int index = Random.Range(0, cardSprites.Count);
@@ -131,7 +148,6 @@ public class HandView : MonoBehaviour
 
         flipTokens--;
 
-        // ✅ SFX: flip de carta (solo si realmente va a voltear)
         SFXManager.I?.PlayCardFlip();
 
         card.Flip();
@@ -142,15 +158,80 @@ public class HandView : MonoBehaviour
 
     private void UpdateFlipUI()
     {
-        if (flipCounterText == null) return;
+        if (flipCounterText != null)
+        {
+            int mod = drawsCount % 3;
+            int missing = (mod == 0) ? 0 : (3 - mod);
 
-        int mod = drawsCount % 3;
-        int missing = (mod == 0) ? 0 : (3 - mod);
+            flipCounterText.text =
+                $"FLIPS: {flipTokens}\n" +
+                $"Siguiente flip en: {missing} carta(s)";
+        }
 
-        if (flipTokens > 0)
-            flipCounterText.text = $"FLIPS: {flipTokens} \nSiguiente flip en: {missing} carta(s)";
-        else
-            flipCounterText.text = $"FLIPS: 0 \nSiguiente flip en: {missing} carta(s)";
+        UpdateTokenUI();
+    }
+
+    private void UpdateTokenUI()
+    {
+        if (tokenCounterText == null) return;
+
+        int genericTokens = GameProgress.Instance != null ? GameProgress.Instance.Tokens : 0;
+        tokenCounterText.text = $"TOKENS: {genericTokens}";
+    }
+
+    public void RefreshCountersUI()
+    {
+        UpdateFlipUI();
+    }
+
+    public bool CanShuffleNow()
+    {
+        if (inputLocked) return false;
+        return handCards.Count > 0 || faceDownCards.Count > 0;
+    }
+
+    public void ShuffleHandAndTable()
+    {
+        if (!CanShuffleNow()) return;
+
+        List<GameObject> handSnapshot = new(handCards);
+        List<FaceDownCard> tableSnapshot = new(faceDownCards);
+
+        // Devolver sprites al mazo
+        for (int i = 0; i < handSnapshot.Count; i++)
+        {
+            if (handSnapshot[i] == null) continue;
+            Sprite s = handSnapshot[i].GetComponent<CardView>()?.CurrentSprite;
+            if (s != null) cardSprites.Add(s);
+        }
+
+        for (int i = 0; i < tableSnapshot.Count; i++)
+        {
+            if (tableSnapshot[i] == null) continue;
+            Sprite s = tableSnapshot[i].FrontSprite;
+            if (s != null) cardSprites.Add(s);
+        }
+
+        // Limpiar listas activas primero para bloquear interacción inmediata
+        handCards.Clear();
+        faceDownCards.Clear();
+
+        // Animar y destruir
+        for (int i = 0; i < handSnapshot.Count; i++)
+        {
+            if (handSnapshot[i] == null) continue;
+            AnimateDestroyCard(handSnapshot[i]);
+        }
+
+        for (int i = 0; i < tableSnapshot.Count; i++)
+        {
+            if (tableSnapshot[i] == null) continue;
+            AnimateDestroyCard(tableSnapshot[i].gameObject);
+        }
+
+        noMatchGameEnded = false;
+        SFXManager.I?.PlayShuffle();
+        UpdateFlipUI();
     }
 
     private void UpdateCardPositions()
@@ -209,7 +290,6 @@ public class HandView : MonoBehaviour
 
         if (a != null && b != null && a.name == b.name)
         {
-            // ✅ SFX: match (sin shuffle aquí)
             SFXManager.I?.PlayMatch();
 
             health?.ApplyMatchResult(true);
@@ -228,7 +308,6 @@ public class HandView : MonoBehaviour
         }
         else
         {
-            // ✅ SFX: no match
             SFXManager.I?.PlayNoMatch();
 
             health?.ApplyMatchResult(false);
@@ -246,10 +325,35 @@ public class HandView : MonoBehaviour
         if (returnedSprite != null && cardSprites != null)
             cardSprites.Add(returnedSprite);
 
-        cardGO.transform.DOKill();
-        cardGO.transform.DOMove(spawnPoint.position, 0.25f).OnComplete(() =>
+        AnimateDestroyCard(cardGO);
+    }
+
+    private void AnimateDestroyCard(GameObject cardGO)
+    {
+        if (cardGO == null) return;
+
+        Transform t = cardGO.transform;
+        t.DOKill();
+
+        SpriteRenderer sr = cardGO.GetComponentInChildren<SpriteRenderer>();
+        if (sr != null) sr.DOKill();
+
+        float moveTime = Mathf.Max(0.01f, returnToDeckTime);
+        float scaleTime = Mathf.Max(0.01f, destroyScaleTime);
+        float fadeTime = Mathf.Max(0.01f, destroyFadeTime);
+
+        Vector3 target = spawnPoint != null ? spawnPoint.position : t.position;
+
+        Sequence seq = DOTween.Sequence();
+        seq.Join(t.DOMove(target, moveTime).SetEase(Ease.InQuad));
+        seq.Join(t.DOScale(0.01f, scaleTime).SetEase(Ease.InBack));
+
+        if (sr != null)
+            seq.Join(sr.DOFade(0f, fadeTime).SetEase(Ease.Linear));
+
+        seq.OnComplete(() =>
         {
-            Destroy(cardGO);
+            if (cardGO != null) Destroy(cardGO);
         });
     }
 
@@ -279,7 +383,6 @@ public class HandView : MonoBehaviour
         if (noMatchGameEnded) return;
         if (health == null) return;
 
-        // NUEVO: si el enemigo ya está muerto, NO aplicar esta condición
         if (health.EnemyHP <= 0)
             return;
 
@@ -335,20 +438,22 @@ public class HandView : MonoBehaviour
 
     public void ClearAllCards()
     {
-        for (int i = 0; i < handCards.Count; i++)
-        {
-            if (handCards[i] == null) continue;
-            handCards[i].transform.DOKill();
-            Destroy(handCards[i]);
-        }
-        handCards.Clear();
+        List<GameObject> handSnapshot = new(handCards);
+        List<FaceDownCard> tableSnapshot = new(faceDownCards);
 
-        for (int i = 0; i < faceDownCards.Count; i++)
-        {
-            if (faceDownCards[i] == null) continue;
-            faceDownCards[i].transform.DOKill();
-            Destroy(faceDownCards[i].gameObject);
-        }
+        handCards.Clear();
         faceDownCards.Clear();
+
+        for (int i = 0; i < handSnapshot.Count; i++)
+        {
+            if (handSnapshot[i] == null) continue;
+            AnimateDestroyCard(handSnapshot[i]);
+        }
+
+        for (int i = 0; i < tableSnapshot.Count; i++)
+        {
+            if (tableSnapshot[i] == null) continue;
+            AnimateDestroyCard(tableSnapshot[i].gameObject);
+        }
     }
 }
