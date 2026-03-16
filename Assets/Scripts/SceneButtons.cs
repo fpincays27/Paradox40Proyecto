@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class SceneButtons : MonoBehaviour
 {
@@ -7,11 +6,13 @@ public class SceneButtons : MonoBehaviour
 
     public void RestartGame()
     {
-        // 🔄 Reiniciar todo el progreso
         GameProgress.Instance?.ResetAll();
+        SceneTransitionPanel.LoadSceneWithTransition(gameSceneName);
+    }
 
-        // 🔁 Cargar escena inicial
-        SceneManager.LoadScene(gameSceneName);
+    public void PlayGame()
+    {
+        SceneTransitionPanel.LoadSceneWithTransition(gameSceneName);
     }
 
     public void QuitGame()

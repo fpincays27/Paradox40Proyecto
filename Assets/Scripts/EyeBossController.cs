@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using DG.Tweening;
 
 public class EyeBossController : MonoBehaviour
@@ -34,8 +33,8 @@ public class EyeBossController : MonoBehaviour
     [Header("Round 2 behavior")]
     [SerializeField] private bool isRound2 = false;
 
-    [Header("Victory")]
-    [SerializeField] private string winSceneName = "Win";
+    [Header("After Second Eye Destroyed")]
+    [SerializeField] private string nextSceneAfterSecondEye = "Pasillo";
 
     private bool shotConsumed = false;
     private bool victoryTriggered = false;
@@ -70,7 +69,6 @@ public class EyeBossController : MonoBehaviour
             yield break;
         }
 
-        // 1) Sprite herido (opcional)
         var sr = hit.GetComponent<SpriteRenderer>();
         if (sr != null)
         {
@@ -80,28 +78,23 @@ public class EyeBossController : MonoBehaviour
 
         yield return new WaitForSeconds(injuredTime);
 
-        // ✅ SFX impacto ojo
         SFXManager.I?.PlayEyeImpact();
 
-        // 2) Desaparecer (fade + scale)
         yield return StartCoroutine(DisappearEye(hit.gameObject));
 
-        // Persistencia (por si rondas futuras)
         if (GameProgress.Instance != null)
         {
             if (hit.IsLeftEye) GameProgress.Instance.LeftEyeDestroyed = true;
             else GameProgress.Instance.RightEyeDestroyed = true;
         }
 
-        // 3) ¿Se fueron LOS DOS ojos? => VICTORIA (Win)
         if (AreBothEyesGone())
         {
             victoryTriggered = true;
-            SceneManager.LoadScene(winSceneName);
+            SceneTransitionPanel.LoadSceneWithTransition(nextSceneAfterSecondEye);
             yield break;
         }
 
-        // 4) Queda solo 1 ojo => esperar y distorsionar (solo Ronda1)
         yield return new WaitForSeconds(delayBeforeDistortion);
 
         if (!isRound2)
@@ -111,11 +104,9 @@ public class EyeBossController : MonoBehaviour
                 StretchRemainingEye(remaining.transform);
         }
 
-        // 5) ✅ Ahora sí: panel + apagón + siguiente escena
         if (flow != null)
             flow.StartBlackoutAndLoadNextScene();
 
-        // Si por algún motivo NO hay flow, al menos permitir otro disparo
         shotConsumed = false;
     }
 
@@ -149,7 +140,6 @@ public class EyeBossController : MonoBehaviour
 
         eyeGO.SetActive(false);
 
-        // Restaurar (por si reusan el GO en otra escena)
         if (sr != null)
         {
             Color c = sr.color;

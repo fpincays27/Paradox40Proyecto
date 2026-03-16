@@ -1,13 +1,13 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.InputSystem;
 
 public class SalonPrincipalFlow : MonoBehaviour
 {
     [Header("UI")]
-    [SerializeField] private GameObject panel;          // Panel que se muestra a los 5s
-    [SerializeField] private TextMeshProUGUI timerText; // Texto opcional para mostrar el conteo (puede ser null)
+    [SerializeField] private GameObject panel;          // Panel que se muestra tras delay
+    [SerializeField] private TextMeshProUGUI timerText; // Texto opcional para mostrar el conteo
 
     [Header("Timing")]
     [SerializeField] private float showPanelAfter = 5f;
@@ -15,6 +15,9 @@ public class SalonPrincipalFlow : MonoBehaviour
 
     [Header("Scenes")]
     [SerializeField] private string nextScene = "Ronda2";
+
+    [Header("Input (opcional)")]
+    [SerializeField] private bool allowSpaceToContinue = true;
 
     private Coroutine countdownRoutine;
     private bool panelClosed = false;
@@ -25,6 +28,20 @@ public class SalonPrincipalFlow : MonoBehaviour
             panel.SetActive(false);
 
         StartCoroutine(ShowPanelDelayed());
+    }
+
+    private void Update()
+    {
+        if (!allowSpaceToContinue) return;
+        if (panel == null) return;
+        if (!panel.activeSelf) return;
+        if (panelClosed) return;
+
+        // Cerrar panel + iniciar contador con SPACE
+        if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
+        {
+            ClosePanelAndStartTimer();
+        }
     }
 
     private IEnumerator ShowPanelDelayed()
@@ -38,7 +55,7 @@ public class SalonPrincipalFlow : MonoBehaviour
         }
     }
 
-    // ✅ Esto lo llamas desde el botón "Cerrar"
+    // Puedes llamarlo desde botón o desde SPACE
     public void ClosePanelAndStartTimer()
     {
         if (panelClosed) return;
@@ -69,6 +86,6 @@ public class SalonPrincipalFlow : MonoBehaviour
         if (timerText != null)
             timerText.text = "0";
 
-        SceneManager.LoadScene(nextScene);
+        SceneTransitionPanel.LoadSceneWithTransition(nextScene);
     }
 }
