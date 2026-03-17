@@ -4279,8 +4279,9 @@ MonoBehaviour:
   lonelyEyeScaleX: 0.2
   lonelyEyeScaleY: 0.5
   stretchTime: 0.15
-  isRound2: 0
-  winSceneName: Win
+  roundId: 1
+  goToIntermissionAfterFirstEye: 1
+  nextSceneAfterSecondEye: Pasillo
 --- !u!4 &856778595
 Transform:
   m_ObjectHideFlags: 0

@@ -1063,6 +1063,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 173440000}
   m_CullTransparentMesh: 1
+--- !u!1 &196303498 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -6689036041284674117, guid: 74710a9e095281e4c9ce0f1b07b92db7, type: 3}
+  m_PrefabInstance: {fileID: 252546615}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &233553263
 GameObject:
   m_ObjectHideFlags: 0
@@ -1152,6 +1157,79 @@ Transform:
   m_Children: []
   m_Father: {fileID: 259772473}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &252546615
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -6689036041284674117, guid: 74710a9e095281e4c9ce0f1b07b92db7, type: 3}
+      propertyPath: m_Name
+      value: Hand
+      objectReference: {fileID: 0}
+    - target: {fileID: -6689036041284674117, guid: 74710a9e095281e4c9ce0f1b07b92db7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2774220344278030320, guid: 74710a9e095281e4c9ce0f1b07b92db7, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3.086
+      objectReference: {fileID: 0}
+    - target: {fileID: 2774220344278030320, guid: 74710a9e095281e4c9ce0f1b07b92db7, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3.086
+      objectReference: {fileID: 0}
+    - target: {fileID: 2774220344278030320, guid: 74710a9e095281e4c9ce0f1b07b92db7, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 3.086
+      objectReference: {fileID: 0}
+    - target: {fileID: 2774220344278030320, guid: 74710a9e095281e4c9ce0f1b07b92db7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.53
+      objectReference: {fileID: 0}
+    - target: {fileID: 2774220344278030320, guid: 74710a9e095281e4c9ce0f1b07b92db7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -4.45
+      objectReference: {fileID: 0}
+    - target: {fileID: 2774220344278030320, guid: 74710a9e095281e4c9ce0f1b07b92db7, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.17
+      objectReference: {fileID: 0}
+    - target: {fileID: 2774220344278030320, guid: 74710a9e095281e4c9ce0f1b07b92db7, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.41434196
+      objectReference: {fileID: 0}
+    - target: {fileID: 2774220344278030320, guid: 74710a9e095281e4c9ce0f1b07b92db7, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.5482174
+      objectReference: {fileID: 0}
+    - target: {fileID: 2774220344278030320, guid: 74710a9e095281e4c9ce0f1b07b92db7, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.57299286
+      objectReference: {fileID: 0}
+    - target: {fileID: 2774220344278030320, guid: 74710a9e095281e4c9ce0f1b07b92db7, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.44660684
+      objectReference: {fileID: 0}
+    - target: {fileID: 2774220344278030320, guid: 74710a9e095281e4c9ce0f1b07b92db7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -104.961
+      objectReference: {fileID: 0}
+    - target: {fileID: 2774220344278030320, guid: 74710a9e095281e4c9ce0f1b07b92db7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -3.296997
+      objectReference: {fileID: 0}
+    - target: {fileID: 2774220344278030320, guid: 74710a9e095281e4c9ce0f1b07b92db7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -90
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: -5645937942226959685, guid: 74710a9e095281e4c9ce0f1b07b92db7, type: 3}
 --- !u!1 &259772472
 GameObject:
   m_ObjectHideFlags: 0
@@ -1370,9 +1448,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FichasManager
   maxHP: 40
-  damageRonda1: 10
-  damageRonda2: 5
-  ownDamagePerResult: 5
+  damageToEnemyRonda1: 10
+  damageToEnemyRonda2: 5
+  damageToEnemyRonda3: 5
+  damageToEnemyRonda4: 20
+  damageToEnemyFallback: 10
+  damageToPlayerRonda1: 5
+  damageToPlayerRonda2: 5
+  damageToPlayerRonda3: 5
+  damageToPlayerRonda4: 5
+  damageToPlayerFallback: 5
   winSceneName: Win
   gameOverSceneName: GameOver
 --- !u!1 &301150653
@@ -4269,6 +4354,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EyeBossController
   flow: {fileID: 2087927282}
+  healthManager: {fileID: 270181228}
   leftEyeGO: {fileID: 1440178499}
   rightEyeGO: {fileID: 566005256}
   injuredLeftSprite: {fileID: 0}
@@ -4280,8 +4366,25 @@ MonoBehaviour:
   lonelyEyeScaleX: 0.2
   lonelyEyeScaleY: 0.5
   stretchTime: 0.15
-  isRound2: 1
-  nextSceneAfterSecondEye: Pasillo
+  roundId: 4
+  goToIntermissionAfterFirstEye: 0
+  nextSceneAfterSecondEye: Win
+  playInlineSequenceWhenNoIntermission: 1
+  weaponVisualToHide: {fileID: 0}
+  weaponControllerToDisable: {fileID: 0}
+  autoFindWeaponVisualIfMissing: 1
+  weaponTag: Weapon
+  weaponNameContains: Arma
+  fakeFadeGroup: {fileID: 331771170}
+  fakeFadeInTime: 1.2
+  fakeFadeHoldTime: 1
+  fakeFadeOutTime: 1.4
+  handToActivate: {fileID: 196303498}
+  handTargetTransform: {fileID: 2025128335}
+  handMoveUpY: 1
+  handMoveTime: 1
+  handMoveEase: 3
+  resetEnemyHpAfterFirstEyeInRonda4: 1
 --- !u!4 &856778595
 Transform:
   m_ObjectHideFlags: 0
@@ -7187,6 +7290,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 9039786785516083399, guid: d38752bacf283dd41a6987fa628f3a5c, type: 3}
   m_PrefabInstance: {fileID: 4944099296212047982}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2025128334
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2025128335}
+  m_Layer: 0
+  m_Name: HandPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2025128335
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2025128334}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.5482174, y: -0.57299286, z: -0.44660684, w: 0.41434196}
+  m_LocalPosition: {x: -1.49, y: -1.95, z: -0.83}
+  m_LocalScale: {x: 3.086, y: 3.086, z: 3.086}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2032305874
 GameObject:
   m_ObjectHideFlags: 0
@@ -7323,7 +7457,7 @@ MonoBehaviour:
   autoOpenChestUIDelay: 2
   weaponPrefab: {fileID: 5981588885858976227, guid: d38752bacf283dd41a6987fa628f3a5c, type: 3}
   weaponSpawnPoint: {fileID: 169242521}
-  nextScene: Pasillo
+  nextScene: Win
   musicSource: {fileID: 4344581614009734525, guid: 48ad0a3452bd647439b2452648b8b985, type: 3}
   sfxSource: {fileID: 1447259857}
   bulbBreakClip: {fileID: 8300000, guid: 267eaa55a75861046a24563dec6266f3, type: 3}
@@ -7716,3 +7850,5 @@ SceneRoots:
   - {fileID: 166388289}
   - {fileID: 31388734}
   - {fileID: 1447259858}
+  - {fileID: 252546615}
+  - {fileID: 2025128335}

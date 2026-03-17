@@ -7268,8 +7268,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d20838a0a07629b4c82d90e1f194fdc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrapdoorToScene
-  gameSceneName: SalonPrincipal
-  startsUnlocked: 0
+  gameSceneName: Ronda3
+  startsUnlocked: 1
   clickableCollider: {fileID: 813157592}
   verboseLogs: 1
 --- !u!64 &821784495

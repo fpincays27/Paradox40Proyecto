@@ -16,6 +16,10 @@ public class SalonPrincipalFlow : MonoBehaviour
     [Header("Scenes")]
     [SerializeField] private string nextScene = "Ronda2";
 
+    [Header("Special Case")]
+    [Tooltip("Si llegas desde esta escena, SalonPrincipal ignorará el retorno y usará nextScene.")]
+    [SerializeField] private string forceFallbackWhenComingFrom = "Ronda1";
+
     [Header("Input (opcional)")]
     [SerializeField] private bool allowSpaceToContinue = true;
 
@@ -86,6 +90,31 @@ public class SalonPrincipalFlow : MonoBehaviour
         if (timerText != null)
             timerText.text = "0";
 
-        SceneTransitionPanel.LoadSceneWithTransition(nextScene);
+        string sceneToLoad = nextScene;
+
+        if (GameProgress.Instance != null)
+        {
+            string pending = GameProgress.Instance.PendingSalonReturnScene;
+
+            if (!string.IsNullOrEmpty(pending))
+            {
+                // Regla especial:
+                // Si venimos de Ronda1, NO retornar a Ronda1; usar nextScene (Ronda2).
+                if (pending == forceFallbackWhenComingFrom)
+                {
+                    sceneToLoad = nextScene;
+                }
+                else
+                {
+                    // En todos los demás casos, sí volvemos a la escena de origen.
+                    sceneToLoad = pending;
+                }
+
+                // Consumir siempre el pending para no arrastrarlo al siguiente ciclo.
+                GameProgress.Instance.PendingSalonReturnScene = string.Empty;
+            }
+        }
+
+        SceneTransitionPanel.LoadSceneWithTransition(sceneToLoad);
     }
 }

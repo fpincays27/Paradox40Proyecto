@@ -4280,7 +4280,9 @@ MonoBehaviour:
   lonelyEyeScaleX: 0.2
   lonelyEyeScaleY: 0.5
   stretchTime: 0.15
-  isRound2: 1
+  roundId: 2
+  goToIntermissionAfterFirstEye: 1
+  inheritStateFromRoundId: 1
   nextSceneAfterSecondEye: Pasillo
 --- !u!4 &856778595
 Transform:

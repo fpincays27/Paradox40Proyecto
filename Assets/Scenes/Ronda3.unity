@@ -4280,8 +4280,9 @@ MonoBehaviour:
   lonelyEyeScaleX: 0.2
   lonelyEyeScaleY: 0.5
   stretchTime: 0.15
-  isRound2: 1
-  nextSceneAfterSecondEye: Pasillo
+  roundId: 3
+  goToIntermissionAfterFirstEye: 1
+  nextSceneAfterSecondEye: Ronda4
 --- !u!4 &856778595
 Transform:
   m_ObjectHideFlags: 0
@@ -7323,7 +7324,7 @@ MonoBehaviour:
   autoOpenChestUIDelay: 2
   weaponPrefab: {fileID: 5981588885858976227, guid: d38752bacf283dd41a6987fa628f3a5c, type: 3}
   weaponSpawnPoint: {fileID: 169242521}
-  nextScene: Pasillo
+  nextScene: SalonPrincipal
   musicSource: {fileID: 4344581614009734525, guid: 48ad0a3452bd647439b2452648b8b985, type: 3}
   sfxSource: {fileID: 1447259857}
   bulbBreakClip: {fileID: 8300000, guid: 267eaa55a75861046a24563dec6266f3, type: 3}
