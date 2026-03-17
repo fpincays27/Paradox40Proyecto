@@ -1,33 +1,41 @@
 using UnityEngine;
 
+
 public class HatCarryClick : MonoBehaviour
 {
     [Header("Refs")]
     [SerializeField] private Camera playerCamera;
     [SerializeField] private CharacterController playerController; // capsule del jugador (opcional)
 
+
     [Header("Carry Settings")]
     [SerializeField] private float carryDistance = 1.8f;
     [SerializeField] private float carryHeightOffset = -0.15f;
     [SerializeField] private float followSmooth = 14f;
 
+
     [Header("Interaction")]
     [SerializeField] private float interactDistance = 3f;
     [SerializeField] private LayerMask interactMask = ~0;
 
+
     [Header("Drop")]
     [SerializeField] private LayerMask groundMask = ~0;
 
+
     [Header("Physics")]
     [SerializeField] private bool ignoreCollisionWithPlayerWhileCarried = true;
+
 
     private Rigidbody rb;
     private Collider[] hatColliders;
     private Collider playerCollider;
 
+
     private bool isCarried;
     private Quaternion carriedRotation; // mantiene la rotación que tenía al agarrarlo
     private Vector3 velocityRef;        // smoothing manual
+
 
     private void Awake()
     {
@@ -35,11 +43,14 @@ public class HatCarryClick : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         hatColliders = GetComponentsInChildren<Collider>(true);
 
+
         if (playerController == null)
             playerController = FindObjectOfType<CharacterController>();
 
+
         if (playerController != null)
             playerCollider = playerController.GetComponent<Collider>();
+
 
         if (rb != null)
         {
@@ -47,6 +58,7 @@ public class HatCarryClick : MonoBehaviour
             rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         }
     }
+
 
     private void Update()
     {
@@ -57,36 +69,45 @@ public class HatCarryClick : MonoBehaviour
         }
     }
 
+
     private void FixedUpdate()
     {
         if (!isCarried || rb == null || playerCamera == null) return;
+
 
         Vector3 targetPos = playerCamera.transform.position
                             + playerCamera.transform.forward * carryDistance
                             + playerCamera.transform.up * carryHeightOffset;
 
+
         // Mover con Rigidbody para respetar colisiones
         Vector3 newPos = Vector3.SmoothDamp(rb.position, targetPos, ref velocityRef, 1f / Mathf.Max(1f, followSmooth));
         rb.MovePosition(newPos);
+
 
         // Mantener la misma rotación que tenía al agarrarlo (sin girarlo)
         rb.MoveRotation(carriedRotation);
     }
 
+
     private void TryPick()
     {
         if (playerCamera == null) return;
+
 
         Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
         if (!Physics.Raycast(ray, out RaycastHit hit, interactDistance, interactMask, QueryTriggerInteraction.Ignore))
             return;
 
+
         HatCarryClick target = hit.transform.GetComponentInParent<HatCarryClick>();
         if (target != this) return;
+
 
         isCarried = true;
         carriedRotation = transform.rotation; // conserva orientación actual
         velocityRef = Vector3.zero;
+
 
         if (rb != null)
         {
@@ -97,12 +118,15 @@ public class HatCarryClick : MonoBehaviour
             rb.freezeRotation = true;    // no girar accidentalmente
         }
 
+
         SetPlayerCollisionIgnored(true);
     }
+
 
     private void Drop()
     {
         isCarried = false;
+
 
         if (rb != null)
         {
@@ -112,7 +136,9 @@ public class HatCarryClick : MonoBehaviour
             rb.angularVelocity = Vector3.zero;
         }
 
+
         SetPlayerCollisionIgnored(false);
+
 
         // Opcional: si miras al suelo cerca, lo acomoda un poco
         if (playerCamera != null)
@@ -125,10 +151,12 @@ public class HatCarryClick : MonoBehaviour
         }
     }
 
+
     private void SetPlayerCollisionIgnored(bool ignored)
     {
         if (!ignoreCollisionWithPlayerWhileCarried) return;
         if (playerCollider == null || hatColliders == null) return;
+
 
         for (int i = 0; i < hatColliders.Length; i++)
         {
