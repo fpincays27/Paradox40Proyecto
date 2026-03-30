@@ -220,6 +220,7 @@ RectTransform:
   - {fileID: 173440001}
   - {fileID: 642409990}
   - {fileID: 331771169}
+  - {fileID: 2068992671}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1370,9 +1371,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FichasManager
   maxHP: 40
-  damageRonda1: 10
-  damageRonda2: 5
-  ownDamagePerResult: 5
+  damageToEnemyRonda1: 10
+  damageToEnemyRonda2: 7
+  damageToEnemyRonda3: 5
+  damageToEnemyRonda4: 3
+  damageToEnemyFallback: 10
+  damageToPlayerRonda1: 5
+  damageToPlayerRonda2: 5
+  damageToPlayerRonda3: 5
+  damageToPlayerRonda4: 5
+  damageToPlayerFallback: 5
   winSceneName: Win
   gameOverSceneName: GameOver
 --- !u!1 &301150653
@@ -2592,8 +2600,8 @@ Transform:
   m_GameObject: {fileID: 566005256}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.89, y: 1.5, z: 0}
-  m_LocalScale: {x: 0.20358704, y: 0.20358704, z: 0.20358704}
+  m_LocalPosition: {x: -1.00938, y: 1.5, z: 0}
+  m_LocalScale: {x: 0.30436262, y: 0.30436262, z: 0.30436262}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 770462284}
@@ -2647,7 +2655,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 48746ffc853b0224cb0f873df7ccde27, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 752a897d527ff384897b35a4a0164631, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2695,7 +2703,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 7.68, y: 10.24}
+    oldSize: {x: 3.27, y: 2.06}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -3362,7 +3370,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &707764990
 Transform:
   m_ObjectHideFlags: 0
@@ -4156,10 +4164,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Que interesante. Lograste vencer a Ojos en su propio juego. Me agradas,
-    hagamos esto m\xE1s entretenido. \n\nTe dar\xE9 dos apuestas. Cada una de ellas
-    puede ser tomada una sola vez. \n\nNo me decepciones, lo harias muy facil para
-    ellos, y muy aburrido para mi.\n\n\nELIGE:       \t\t\t\t\t\t"
+  m_text: "Lograste vencer a Ojos en su propio juego. Hagamos esto m\xE1s interesante.
+    \n\nTe dar\xE9 dos apuestas. \n\nNo me decepciones, lo harias muy facil para
+    ellos, y muy aburrido para mi.\n\nELIGE:    "
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4282,7 +4289,20 @@ MonoBehaviour:
   stretchTime: 0.15
   roundId: 3
   goToIntermissionAfterFirstEye: 1
+  inheritStateFromRoundId: -1
+  copyInheritedStateToCurrentRound: 1
   nextSceneAfterSecondEye: Ronda4
+  playHandIntroOnStart: 1
+  requiredPreviousSceneName: Ronda4Transition
+  playIfPreviousSceneUnknown: 0
+  handToActivate: {fileID: 0}
+  handTargetTransform: {fileID: 0}
+  handStartDelay: 0.05
+  handHoldBeforeMove: 0.15
+  handMoveUpY: 0.35
+  handMoveTime: 0.45
+  handMoveEase: 3
+  verboseLogs: 1
 --- !u!4 &856778595
 Transform:
   m_ObjectHideFlags: 0
@@ -5477,8 +5497,8 @@ Transform:
   m_GameObject: {fileID: 1440178499}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.97, y: 1.67, z: 0}
-  m_LocalScale: {x: 0.20905659, y: 0.20905659, z: 0.20905659}
+  m_LocalPosition: {x: 0.09, y: 1.41, z: 0}
+  m_LocalScale: {x: 0.25392902, y: 0.25392902, z: 0.25392902}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 770462284}
@@ -5532,7 +5552,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 942143c2f864c9648bd13e81b685bf69, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f1ae3bdb09c03ef47baaca9c1757a6bb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -5576,7 +5596,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -2.7, y: -0.6}
+  m_Offset: {x: 1.1402597, y: -0.08708191}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -5586,7 +5606,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 5, y: 5}
+  m_Size: {x: 4.7934294, y: 6.025836}
   m_EdgeRadius: 0
 --- !u!114 &1440178505
 MonoBehaviour:
@@ -7263,6 +7283,121 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2032305874}
   m_CullTransparentMesh: 1
+--- !u!1001 &2068992670
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 13992628}
+    m_Modifications:
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -1342.7291
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: -924.6636
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -623
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 444
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5364428435551637082, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_text
+      value: "OBJETIVO\n1.Gana el juego de Cartas\n2. Re\xFAne los tokens de ser
+        posible (Tecla O para volver a ver)"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5364428435551637082, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_margin.z
+      value: -80.91315
+      objectReference: {fileID: 0}
+    - target: {fileID: 5430248355044285282, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -54
+      objectReference: {fileID: 0}
+    - target: {fileID: 6448619761373286160, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_Name
+      value: Objective Panel
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+--- !u!224 &2068992671 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+  m_PrefabInstance: {fileID: 2068992670}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2087927280
 GameObject:
   m_ObjectHideFlags: 0

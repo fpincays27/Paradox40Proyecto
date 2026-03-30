@@ -219,6 +219,7 @@ RectTransform:
   - {fileID: 394261010}
   - {fileID: 173440001}
   - {fileID: 642409990}
+  - {fileID: 1408324185}
   - {fileID: 331771169}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1449,9 +1450,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FichasManager
   maxHP: 40
   damageToEnemyRonda1: 10
-  damageToEnemyRonda2: 5
+  damageToEnemyRonda2: 7
   damageToEnemyRonda3: 5
-  damageToEnemyRonda4: 20
+  damageToEnemyRonda4: 3
   damageToEnemyFallback: 10
   damageToPlayerRonda1: 5
   damageToPlayerRonda2: 5
@@ -2315,7 +2316,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &463672393
 Transform:
   m_ObjectHideFlags: 0
@@ -2677,8 +2678,8 @@ Transform:
   m_GameObject: {fileID: 566005256}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.89, y: 1.5, z: 0}
-  m_LocalScale: {x: 0.20358704, y: 0.20358704, z: 0.20358704}
+  m_LocalPosition: {x: -0.89, y: 1.44, z: 0}
+  m_LocalScale: {x: 0.15464064, y: 0.15464064, z: 0.15464064}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 770462284}
@@ -2732,7 +2733,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 48746ffc853b0224cb0f873df7ccde27, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9b959466ad63abd4ea866b05cbeeac14, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2776,17 +2777,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.8, y: 0}
+  m_Offset: {x: -0.20565128, y: 0.24764466}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 7.68, y: 10.24}
+    oldSize: {x: 15.36, y: 10.24}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 5.3, y: 5}
+  m_Size: {x: 8.866089, y: 9.2595005}
   m_EdgeRadius: 0
 --- !u!114 &566005260
 MonoBehaviour:
@@ -3447,7 +3448,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &707764990
 Transform:
   m_ObjectHideFlags: 0
@@ -4241,10 +4242,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Que interesante. Lograste vencer a Ojos en su propio juego. Me agradas,
-    hagamos esto m\xE1s entretenido. \n\nTe dar\xE9 dos apuestas. Cada una de ellas
-    puede ser tomada una sola vez. \n\nNo me decepciones, lo harias muy facil para
-    ellos, y muy aburrido para mi.\n\n\nELIGE:       \t\t\t\t\t\t"
+  m_text: "Lograste vencer a Ojos en su propio juego. Hagamos esto m\xE1s interesante.
+    \n\nTe dar\xE9 dos apuestas. \n\nNo me decepciones, lo harias muy facil para
+    ellos, y muy aburrido para mi.\n\nELIGE:    "
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4354,7 +4354,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EyeBossController
   flow: {fileID: 2087927282}
-  healthManager: {fileID: 270181228}
   leftEyeGO: {fileID: 1440178499}
   rightEyeGO: {fileID: 566005256}
   injuredLeftSprite: {fileID: 0}
@@ -4367,24 +4366,21 @@ MonoBehaviour:
   lonelyEyeScaleY: 0.5
   stretchTime: 0.15
   roundId: 4
-  goToIntermissionAfterFirstEye: 0
+  goToIntermissionAfterFirstEye: 1
+  inheritStateFromRoundId: -1
+  copyInheritedStateToCurrentRound: 1
   nextSceneAfterSecondEye: Win
-  playInlineSequenceWhenNoIntermission: 1
-  weaponVisualToHide: {fileID: 0}
-  weaponControllerToDisable: {fileID: 0}
-  autoFindWeaponVisualIfMissing: 1
-  weaponTag: Weapon
-  weaponNameContains: Arma
-  fakeFadeGroup: {fileID: 331771170}
-  fakeFadeInTime: 1.2
-  fakeFadeHoldTime: 1
-  fakeFadeOutTime: 1.4
+  playHandIntroOnStart: 1
+  requiredPreviousSceneName: Ronda4Transition
+  playIfPreviousSceneUnknown: 0
   handToActivate: {fileID: 196303498}
   handTargetTransform: {fileID: 2025128335}
+  handStartDelay: 1
+  handHoldBeforeMove: 0.5
   handMoveUpY: 1
   handMoveTime: 1
   handMoveEase: 3
-  resetEnemyHpAfterFirstEyeInRonda4: 1
+  verboseLogs: 1
 --- !u!4 &856778595
 Transform:
   m_ObjectHideFlags: 0
@@ -4795,7 +4791,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 40
   m_WholeNumbers: 0
-  m_Value: 0
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -5338,6 +5334,121 @@ MonoBehaviour:
   returnToDeckTime: 0.25
   destroyScaleTime: 0.18
   destroyFadeTime: 0.18
+--- !u!1001 &1408324184
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 13992628}
+    m_Modifications:
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -1342.7291
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: -924.6636
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -667
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 444
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5364428435551637082, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_text
+      value: "OBJETIVOS\n1.Gana el juego de cartas.(Tecla O para volver a ver los
+        objetivos)\nTip: Esta vez el no te dejar\xE1 escapar"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5364428435551637082, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_margin.z
+      value: -169.04425
+      objectReference: {fileID: 0}
+    - target: {fileID: 5430248355044285282, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6448619761373286160, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_Name
+      value: Objective Panel
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+--- !u!224 &1408324185 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+  m_PrefabInstance: {fileID: 1408324184}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1429352604
 GameObject:
   m_ObjectHideFlags: 0
@@ -5579,8 +5690,8 @@ Transform:
   m_GameObject: {fileID: 1440178499}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.97, y: 1.67, z: 0}
-  m_LocalScale: {x: 0.20905659, y: 0.20905659, z: 0.20905659}
+  m_LocalPosition: {x: 0.42, y: 1.5, z: 0}
+  m_LocalScale: {x: 0.14992702, y: 0.14992702, z: 0.14992702}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 770462284}
@@ -5634,7 +5745,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 942143c2f864c9648bd13e81b685bf69, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d69df299064ba30499ec9cef8246e5d0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -5678,7 +5789,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -2.7, y: -0.6}
+  m_Offset: {x: 0.007572174, y: 0.21737981}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -5688,7 +5799,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 5, y: 5}
+  m_Size: {x: 8.371695, y: 7.860829}
   m_EdgeRadius: 0
 --- !u!114 &1440178505
 MonoBehaviour:
@@ -7457,7 +7568,7 @@ MonoBehaviour:
   autoOpenChestUIDelay: 2
   weaponPrefab: {fileID: 5981588885858976227, guid: d38752bacf283dd41a6987fa628f3a5c, type: 3}
   weaponSpawnPoint: {fileID: 169242521}
-  nextScene: Win
+  nextScene: Ronda4Transition
   musicSource: {fileID: 4344581614009734525, guid: 48ad0a3452bd647439b2452648b8b985, type: 3}
   sfxSource: {fileID: 1447259857}
   bulbBreakClip: {fileID: 8300000, guid: 267eaa55a75861046a24563dec6266f3, type: 3}

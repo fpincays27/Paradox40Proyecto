@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameProgress : MonoBehaviour
 {
-    public static GameProgress Instance;
+    public static GameProgress Instance { get; private set; }
 
     public bool HasWeapon { get; private set; }
 
@@ -32,9 +32,35 @@ public class GameProgress : MonoBehaviour
     // Si viene de una ronda al Salón, define a qué ronda debe volver.
     public string PendingSalonReturnScene { get; set; } = string.Empty;
 
-    private void Awake()
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void BootstrapBeforeFirstScene()
+    {
+        EnsureInstance();
+    }
+
+    public static GameProgress EnsureInstance()
     {
         if (Instance != null)
+            return Instance;
+
+        // Si existe uno en escena, usar ese.
+        GameProgress existing = FindFirstObjectByType<GameProgress>();
+        if (existing != null)
+        {
+            Instance = existing;
+            DontDestroyOnLoad(existing.gameObject);
+            return Instance;
+        }
+
+        // Si no existe, crearlo en runtime.
+        GameObject go = new GameObject("GameProgress");
+        Instance = go.AddComponent<GameProgress>();
+        return Instance;
+    }
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;

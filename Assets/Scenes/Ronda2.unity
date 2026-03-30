@@ -219,6 +219,7 @@ RectTransform:
   - {fileID: 394261010}
   - {fileID: 173440001}
   - {fileID: 642409990}
+  - {fileID: 1711492647}
   - {fileID: 331771169}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1370,9 +1371,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FichasManager
   maxHP: 40
-  damageRonda1: 10
-  damageRonda2: 5
-  ownDamagePerResult: 5
+  damageToEnemyRonda1: 10
+  damageToEnemyRonda2: 7
+  damageToEnemyRonda3: 5
+  damageToEnemyRonda4: 3
+  damageToEnemyFallback: 10
+  damageToPlayerRonda1: 5
+  damageToPlayerRonda2: 5
+  damageToPlayerRonda3: 5
+  damageToPlayerRonda4: 5
+  damageToPlayerFallback: 5
   winSceneName: Win
   gameOverSceneName: GameOver
 --- !u!1 &301150653
@@ -4156,10 +4164,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Que interesante. Lograste vencer a Ojos en su propio juego. Me agradas,
-    hagamos esto m\xE1s entretenido. \n\nTe dar\xE9 dos apuestas. Cada una de ellas
-    puede ser tomada una sola vez. \n\nNo me decepciones, lo harias muy facil para
-    ellos, y muy aburrido para mi.\n\n\nELIGE:       \t\t\t\t\t\t"
+  m_text: "Lograste vencer a Ojos en su propio juego. Hagamos esto m\xE1s interesante.
+    \n\nTe dar\xE9 dos apuestas. \n\nNo me decepciones, lo harias muy facil para
+    ellos, y muy aburrido para mi.\n\nELIGE:    "
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4283,7 +4290,19 @@ MonoBehaviour:
   roundId: 2
   goToIntermissionAfterFirstEye: 1
   inheritStateFromRoundId: 1
+  copyInheritedStateToCurrentRound: 1
   nextSceneAfterSecondEye: Pasillo
+  playHandIntroOnStart: 1
+  requiredPreviousSceneName: Ronda4Transition
+  playIfPreviousSceneUnknown: 0
+  handToActivate: {fileID: 0}
+  handTargetTransform: {fileID: 0}
+  handStartDelay: 0.05
+  handHoldBeforeMove: 0.15
+  handMoveUpY: 0.35
+  handMoveTime: 0.45
+  handMoveEase: 3
+  verboseLogs: 1
 --- !u!4 &856778595
 Transform:
   m_ObjectHideFlags: 0
@@ -6593,6 +6612,118 @@ SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 2895017683652581017, guid: 52299366209ab234aa0e39ab1474998a, type: 3}
   m_PrefabInstance: {fileID: 532766786885315089}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1711492646
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 13992628}
+    m_Modifications:
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -1342.7291
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: -924.6636
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -671
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 457
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5364428435551637082, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_text
+      value: "HABILIDAD\n1.El nuevo bot\xF3n sirve para delvolver las cartas al maso.
+        Tienes un uso gratis \n2.Los token sirven para volver a usar este bot\xF3n,
+        \xFAsalo con sabiduria.(Tecla O para volver a ver)"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5364428435551637082, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_margin.z
+      value: -375.72766
+      objectReference: {fileID: 0}
+    - target: {fileID: 6448619761373286160, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+      propertyPath: m_Name
+      value: Objective Panel
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+--- !u!224 &1711492647 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 626518387017049905, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
+  m_PrefabInstance: {fileID: 1711492646}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1744284334
 GameObject:
   m_ObjectHideFlags: 0
@@ -7330,8 +7461,8 @@ MonoBehaviour:
   sfxSource: {fileID: 1447259857}
   bulbBreakClip: {fileID: 8300000, guid: 267eaa55a75861046a24563dec6266f3, type: 3}
   blackoutGroup: {fileID: 331771170}
-  fadeToBlackTime: 0.35
-  loadSceneDelay: 3
+  fadeToBlackTime: 3
+  loadSceneDelay: 5
 --- !u!1 &2110993215
 GameObject:
   m_ObjectHideFlags: 0

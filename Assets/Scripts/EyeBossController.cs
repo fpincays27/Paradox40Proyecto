@@ -7,7 +7,6 @@ public class EyeBossController : MonoBehaviour
 {
     [Header("Refs")]
     [SerializeField] private RoundFlowController flow;
-    [SerializeField] private HealthManager healthManager; // NUEVO
 
     [Header("Eyes")]
     [SerializeField] private GameObject leftEyeGO;
@@ -36,54 +35,104 @@ public class EyeBossController : MonoBehaviour
     [SerializeField] private int roundId = 2;
     [SerializeField] private bool goToIntermissionAfterFirstEye = true;
 
+    [Header("Carry Progress From Previous Round (opcional)")]
+    [Tooltip("Si la ronda actual no tiene estado guardado, hereda desde esta ronda (ej: Ronda2 hereda de Ronda1 => 1).")]
+    [SerializeField] private int inheritStateFromRoundId = -1;
+    [SerializeField] private bool copyInheritedStateToCurrentRound = true;
+
     [Header("After Second Eye Destroyed")]
     [SerializeField] private string nextSceneAfterSecondEye = "Pasillo";
 
-    [Header("No-Intermission First Eye Sequence (ej. Ronda4)")]
-    [SerializeField] private bool playInlineSequenceWhenNoIntermission = true;
-
-    [Tooltip("Si lo asignas, se usa este GO de arma para ocultar.")]
-    [SerializeField] private GameObject weaponVisualToHide;
-
-    [Tooltip("Opcional: componente/script del arma para desactivar control.")]
-    [SerializeField] private Behaviour weaponControllerToDisable;
-
-    [Header("Auto Find Weapon (si weaponVisualToHide está vacío)")]
-    [SerializeField] private bool autoFindWeaponVisualIfMissing = true;
-    [SerializeField] private string weaponTag = "Weapon";
-    [SerializeField] private string weaponNameContains = "Arma";
-
-    [Header("Fake Fade")]
-    [SerializeField] private CanvasGroup fakeFadeGroup;
-    [SerializeField] private float fakeFadeInTime = 0.18f;
-    [SerializeField] private float fakeFadeHoldTime = 0.12f;
-    [SerializeField] private float fakeFadeOutTime = 0.20f;
-
-    [Header("Hand Reveal")]
+    [Header("Ronda4 Intro Hand (desde transición)")]
+    [SerializeField] private bool playHandIntroOnStart = true;
+    [SerializeField] private string requiredPreviousSceneName = "Ronda4Transition";
+    [SerializeField] private bool playIfPreviousSceneUnknown = false; // fallback útil para debug
     [SerializeField] private GameObject handToActivate;
     [SerializeField] private Transform handTargetTransform;
+    [SerializeField] private float handStartDelay = 0.05f;
+    [SerializeField] private float handHoldBeforeMove = 0.15f;
     [SerializeField] private float handMoveUpY = 0.35f;
     [SerializeField] private float handMoveTime = 0.45f;
     [SerializeField] private Ease handMoveEase = Ease.OutSine;
-
-    [Header("Boss Phases")]
-    [Tooltip("Si está activo y estás en Ronda4, al destruir el primer ojo EnemyHP vuelve a 40.")]
-    [SerializeField] private bool resetEnemyHpAfterFirstEyeInRonda4 = true; // NUEVO
+    [SerializeField] private bool verboseLogs = true;
 
     private bool shotConsumed = false;
     private bool victoryTriggered = false;
-    private bool firstEyeInlineSequencePlayed = false;
+
+    // Tracker estático de escena previa
+    private static bool sceneTrackerInstalled = false;
+    private static string previousSceneName = string.Empty;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void InstallSceneTrackerEarly()
+    {
+        EnsureSceneTracker();
+    }
+
+    private static void EnsureSceneTracker()
+    {
+        if (sceneTrackerInstalled) return;
+        sceneTrackerInstalled = true;
+        SceneManager.activeSceneChanged += OnActiveSceneChanged;
+    }
+
+    private static void OnActiveSceneChanged(Scene oldScene, Scene newScene)
+    {
+        previousSceneName = oldScene.name;
+    }
+
+    private void Awake()
+    {
+        EnsureSceneTracker();
+    }
 
     private void Start()
     {
         ApplyPersistedEyes();
+        TryPlayStartHandIntro();
+    }
 
-        if (fakeFadeGroup != null)
-        {
-            fakeFadeGroup.alpha = 0f;
-            fakeFadeGroup.blocksRaycasts = false;
-            fakeFadeGroup.interactable = false;
-        }
+    private void TryPlayStartHandIntro()
+    {
+        if (!playHandIntroOnStart) return;
+        if (roundId != 4) return;
+        if (handToActivate == null) return;
+
+        bool previousMatches = !string.IsNullOrEmpty(requiredPreviousSceneName) &&
+                               previousSceneName == requiredPreviousSceneName;
+
+        bool previousUnknown = string.IsNullOrEmpty(previousSceneName);
+        bool shouldPlay = previousMatches || (previousUnknown && playIfPreviousSceneUnknown);
+
+        if (verboseLogs)
+            Debug.Log($"[EyeBossController] Start intro check. prev='{previousSceneName}', required='{requiredPreviousSceneName}', play={shouldPlay}");
+
+        if (!shouldPlay) return;
+
+        StartCoroutine(PlayHandIntroSequence());
+    }
+
+    private IEnumerator PlayHandIntroSequence()
+    {
+        if (handStartDelay > 0f)
+            yield return new WaitForSeconds(handStartDelay);
+
+        handToActivate.SetActive(true);
+
+        if (handHoldBeforeMove > 0f)
+            yield return new WaitForSeconds(handHoldBeforeMove);
+
+        Transform ht = handToActivate.transform;
+        ht.DOKill();
+
+        Vector3 start = ht.position;
+        Vector3 target = handTargetTransform != null
+            ? handTargetTransform.position
+            : start + Vector3.up * handMoveUpY;
+
+        yield return ht.DOMove(target, handMoveTime)
+            .SetEase(handMoveEase)
+            .WaitForCompletion();
     }
 
     private void ApplyPersistedEyes()
@@ -91,9 +140,32 @@ public class EyeBossController : MonoBehaviour
         if (GameProgress.Instance == null) return;
 
         GameProgress.EyeRoundState state = GameProgress.Instance.GetEyeState(roundId);
+        bool hasOwnProgress = HasAnyProgress(state);
+
+        bool canInherit = inheritStateFromRoundId >= 0 && inheritStateFromRoundId != roundId;
+        if (!hasOwnProgress && canInherit)
+        {
+            GameProgress.EyeRoundState inherited = GameProgress.Instance.GetEyeState(inheritStateFromRoundId);
+
+            if (HasAnyProgress(inherited))
+            {
+                state = inherited;
+
+                if (copyInheritedStateToCurrentRound)
+                {
+                    if (inherited.LeftDestroyed) GameProgress.Instance.SetEyeDestroyed(roundId, true);
+                    if (inherited.RightDestroyed) GameProgress.Instance.SetEyeDestroyed(roundId, false);
+                }
+            }
+        }
 
         if (leftEyeGO != null) leftEyeGO.SetActive(!state.LeftDestroyed);
         if (rightEyeGO != null) rightEyeGO.SetActive(!state.RightDestroyed);
+    }
+
+    private bool HasAnyProgress(GameProgress.EyeRoundState state)
+    {
+        return state.LeftDestroyed || state.RightDestroyed;
     }
 
     public void OnEyeShot(EyeTarget hit)
@@ -141,10 +213,6 @@ public class EyeBossController : MonoBehaviour
             yield break;
         }
 
-        // NUEVO: primer ojo caído => reset HP enemigo a 40 SOLO en Ronda4
-        if (resetEnemyHpAfterFirstEyeInRonda4 && roundId == 4 && healthManager != null)
-            healthManager.ResetEnemyHPToMax();
-
         yield return new WaitForSeconds(delayBeforeDistortion);
 
         GameObject remaining = GetRemainingEye();
@@ -161,95 +229,7 @@ public class EyeBossController : MonoBehaviour
             yield break;
         }
 
-        if (!goToIntermissionAfterFirstEye && playInlineSequenceWhenNoIntermission && !firstEyeInlineSequencePlayed)
-        {
-            firstEyeInlineSequencePlayed = true;
-            yield return StartCoroutine(PlayInlineNoTransitionSequence());
-        }
-
         shotConsumed = false;
-    }
-
-    private IEnumerator PlayInlineNoTransitionSequence()
-    {
-        ResolveWeaponReferences();
-
-        if (weaponControllerToDisable != null)
-            weaponControllerToDisable.enabled = false;
-
-        if (weaponVisualToHide != null)
-            weaponVisualToHide.SetActive(false);
-
-        if (fakeFadeGroup != null)
-        {
-            fakeFadeGroup.blocksRaycasts = true;
-            fakeFadeGroup.interactable = true;
-
-            yield return fakeFadeGroup.DOFade(1f, fakeFadeInTime).SetEase(Ease.Linear).WaitForCompletion();
-
-            if (fakeFadeHoldTime > 0f)
-                yield return new WaitForSeconds(fakeFadeHoldTime);
-
-            yield return fakeFadeGroup.DOFade(0f, fakeFadeOutTime).SetEase(Ease.Linear).WaitForCompletion();
-
-            fakeFadeGroup.blocksRaycasts = false;
-            fakeFadeGroup.interactable = false;
-        }
-
-        if (handToActivate != null)
-        {
-            handToActivate.SetActive(true);
-
-            Transform ht = handToActivate.transform;
-            ht.DOKill();
-
-            Vector3 start = ht.position;
-            Vector3 target = handTargetTransform != null
-                ? handTargetTransform.position
-                : start + Vector3.up * handMoveUpY;
-
-            yield return ht.DOMove(target, handMoveTime)
-                .SetEase(handMoveEase)
-                .WaitForCompletion();
-        }
-    }
-
-    private void ResolveWeaponReferences()
-    {
-        if (!autoFindWeaponVisualIfMissing) return;
-
-        if (weaponVisualToHide == null)
-        {
-            if (!string.IsNullOrEmpty(weaponTag))
-            {
-                try
-                {
-                    var byTag = GameObject.FindWithTag(weaponTag);
-                    if (byTag != null) weaponVisualToHide = byTag;
-                }
-                catch
-                {
-                    // Tag no existe
-                }
-            }
-
-            if (weaponVisualToHide == null && !string.IsNullOrEmpty(weaponNameContains))
-            {
-                var all = FindObjectsByType<Transform>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
-                for (int i = 0; i < all.Length; i++)
-                {
-                    if (all[i] == null) continue;
-                    if (all[i].name.ToLower().Contains(weaponNameContains.ToLower()))
-                    {
-                        weaponVisualToHide = all[i].gameObject;
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (weaponControllerToDisable == null && weaponVisualToHide != null)
-            weaponControllerToDisable = weaponVisualToHide.GetComponent<Behaviour>();
     }
 
     private bool AreBothEyesGone()

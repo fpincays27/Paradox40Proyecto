@@ -52,18 +52,22 @@ public class HealthManager : MonoBehaviour
                 damageToEnemyPerMatch = damageToEnemyRonda1;
                 damageToPlayerPerMiss = damageToPlayerRonda1;
                 break;
+
             case "Ronda2":
                 damageToEnemyPerMatch = damageToEnemyRonda2;
                 damageToPlayerPerMiss = damageToPlayerRonda2;
                 break;
+
             case "Ronda3":
                 damageToEnemyPerMatch = damageToEnemyRonda3;
                 damageToPlayerPerMiss = damageToPlayerRonda3;
                 break;
+
             case "Ronda4":
                 damageToEnemyPerMatch = damageToEnemyRonda4;
                 damageToPlayerPerMiss = damageToPlayerRonda4;
                 break;
+
             default:
                 damageToEnemyPerMatch = damageToEnemyFallback;
                 damageToPlayerPerMiss = damageToPlayerFallback;
@@ -99,14 +103,6 @@ public class HealthManager : MonoBehaviour
             OnHpChanged?.Invoke(PlayerHP, EnemyHP);
 
         return changed;
-    }
-
-    public void ResetEnemyHPToMax()
-    {
-        if (gameEnded) return;
-
-        EnemyHP = maxHP;
-        OnHpChanged?.Invoke(PlayerHP, EnemyHP);
     }
 
     private void CheckEndGame()
