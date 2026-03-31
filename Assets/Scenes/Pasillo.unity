@@ -3068,16 +3068,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5364428435551637082, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
       propertyPath: m_text
-      value: 'OBJETIVOS
-
-        1.Resuelve los 4 puzzles de los sombreros para abrir
-        la trampilla que esta en el centro .(Tecla O para volver a ver los objetivos)
-
-
-        Tip:
-        Cada pasillo tiene una zona con una alfombra, en esta dejaras la cantidad
-        de sombreros y del color necesario para conseguir avanzar. Utiliza el entorno
-        para saber de que color y la cantidad de sombreros que requieres'
+      value: "OBJETIVOS\n1.Resuelve los 4 puzzles de los sombreros para abrir la
+        trampilla que esta en el centro.\n\n*Ten cuidado con ciertos sombreros. Si
+        los mueves bruscamente agitar\xE1n sus almas y te empujar\xE1n. Sueltalos
+        de ves en cuando si lo necesitas "
       objectReference: {fileID: 0}
     - target: {fileID: 5364428435551637082, guid: 04cfa3aabd8475046a5818782a4315ab, type: 3}
       propertyPath: m_margin.w
@@ -8657,7 +8651,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &959745469
 RectTransform:
   m_ObjectHideFlags: 0

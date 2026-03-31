@@ -153,14 +153,12 @@ public class RoundFlowController : MonoBehaviour
 
         seq.AppendInterval(delay);
 
-        // Caída física
         seq.Append(
             chestInstance.transform
                 .DOMove(finalPos, chestDropDuration)
                 .SetEase(Ease.InQuad)
         );
 
-        // 🔥 IMPACTO EXACTO
         seq.InsertCallback(impactTime, () =>
         {
             if (chestSpawnVFX != null)
@@ -172,14 +170,12 @@ public class RoundFlowController : MonoBehaviour
             SFXManager.I?.PlayChestSpawn();
         });
 
-        // Bounce arriba
         seq.Append(
             chestInstance.transform
                 .DOMoveY(finalPos.y + chestBounceHeight, chestBounceDuration)
                 .SetEase(Ease.OutSine)
         );
 
-        // Bounce abajo
         seq.Append(
             chestInstance.transform
                 .DOMoveY(finalPos.y, chestBounceDuration)
@@ -227,24 +223,24 @@ public class RoundFlowController : MonoBehaviour
             SFXManager.I?.PlayWeaponSpawn();
         }
     }
-    
-    // RoundFlowController.OnChooseToken()
+
     public void OnChooseToken()
     {
         Debug.Log($"[RoundFlow] OnChooseToken - GP null? {GameProgress.Instance == null}");
+
         if (GameProgress.Instance != null)
-        Debug.Log($"[RoundFlow] Tokens antes: {GameProgress.Instance.Tokens}");
-            
-        
+            Debug.Log($"[RoundFlow] Tokens antes: {GameProgress.Instance.Tokens}");
+
         HideChest();
-        
+
         GameProgress.Instance?.GainToken(1);
-        
+
         if (GameProgress.Instance != null)
-        Debug.Log($"[RoundFlow] Tokens despues: {GameProgress.Instance.Tokens}");
-        
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-}
+            Debug.Log($"[RoundFlow] Tokens despues: {GameProgress.Instance.Tokens}");
+
+        string currentSceneName = SceneManager.GetActiveScene().name;
+        SceneTransitionPanel.LoadSceneWithTransition(currentSceneName);
+    }
 
     private void HideChest()
     {
@@ -305,7 +301,7 @@ public class RoundFlowController : MonoBehaviour
 
         DOVirtual.DelayedCall(loadSceneDelay, () =>
         {
-            SceneManager.LoadScene(nextScene);
+            SceneTransitionPanel.LoadSceneWithTransition(nextScene);
         });
     }
 }

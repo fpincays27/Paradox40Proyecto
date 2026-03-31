@@ -8,11 +8,21 @@ public class MusicManager : MonoBehaviour
     public static MusicManager Instance;
 
     [Header("Music Clips")]
+    public AudioClip gameOverMusic;
+    public AudioClip introMusic;
+    public AudioClip pasilloMusic;
     public AudioClip portadaMusic;
-    public AudioClip salonPrincipalMusic;
+    public AudioClip ronda0Music;
     public AudioClip ronda1Music;
     public AudioClip ronda2Music;
-    public AudioClip gameOverMusic;
+    public AudioClip ronda3Music;
+    public AudioClip ronda4Music;
+    public AudioClip ronda4TransitionMusic;
+    public AudioClip salonPrincipalMusic;
+    public AudioClip transitionFinalMusic;
+    public AudioClip transitionPasilloMusic;
+    public AudioClip transitionSalonMusic;
+    public AudioClip tutorialMusic;
     public AudioClip winMusic;
 
     [Header("Fade Settings")]
@@ -55,12 +65,24 @@ public class MusicManager : MonoBehaviour
     {
         switch (scene.name)
         {
+            case "GameOver":
+                PlayWithFade(gameOverMusic, loop: false);
+                break;
+
+            case "Intro":
+                PlayWithFade(introMusic);
+                break;
+
+            case "Pasillo":
+                PlayWithFade(pasilloMusic);
+                break;
+
             case "Portada":
                 PlayWithFade(portadaMusic);
                 break;
 
-            case "SalonPrincipal":
-                PlayWithFade(salonPrincipalMusic);
+            case "Ronda0":
+                PlayWithFade(ronda0Music);
                 break;
 
             case "Ronda1":
@@ -71,8 +93,36 @@ public class MusicManager : MonoBehaviour
                 PlayWithFade(ronda2Music);
                 break;
 
-            case "GameOver":
-                PlayWithFade(gameOverMusic, loop: false);
+            case "Ronda3":
+                PlayWithFade(ronda3Music);
+                break;
+
+            case "Ronda4":
+                PlayWithFade(ronda4Music);
+                break;
+
+            case "Ronda4Transition":
+                PlayWithFade(ronda4TransitionMusic);
+                break;
+
+            case "SalonPrincipal":
+                PlayWithFade(salonPrincipalMusic);
+                break;
+
+            case "TransitionFinal":
+                PlayWithFade(transitionFinalMusic);
+                break;
+
+            case "TransitionPasillo":
+                PlayWithFade(transitionPasilloMusic);
+                break;
+
+            case "TransitionSalon":
+                PlayWithFade(transitionSalonMusic);
+                break;
+
+            case "Tutorial":
+                PlayWithFade(tutorialMusic);
                 break;
 
             case "Win":

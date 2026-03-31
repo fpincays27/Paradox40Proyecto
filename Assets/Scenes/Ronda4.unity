@@ -1452,14 +1452,14 @@ MonoBehaviour:
   damageToEnemyRonda1: 10
   damageToEnemyRonda2: 7
   damageToEnemyRonda3: 5
-  damageToEnemyRonda4: 3
+  damageToEnemyRonda4: 4
   damageToEnemyFallback: 10
   damageToPlayerRonda1: 5
   damageToPlayerRonda2: 5
   damageToPlayerRonda3: 5
   damageToPlayerRonda4: 5
   damageToPlayerFallback: 5
-  winSceneName: Win
+  winSceneName: TransitionFinal
   gameOverSceneName: GameOver
 --- !u!1 &301150653
 GameObject:
@@ -4369,7 +4369,7 @@ MonoBehaviour:
   goToIntermissionAfterFirstEye: 1
   inheritStateFromRoundId: -1
   copyInheritedStateToCurrentRound: 1
-  nextSceneAfterSecondEye: Win
+  nextSceneAfterSecondEye: TransitionFinal
   playHandIntroOnStart: 1
   requiredPreviousSceneName: Ronda4Transition
   playIfPreviousSceneUnknown: 0

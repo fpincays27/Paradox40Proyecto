@@ -12,14 +12,23 @@ EditorBuildSettings:
     path: Assets/Scenes/Tutorial.unity
     guid: dacdfc9eebe1d2348876f6dc35866fa5
   - enabled: 1
+    path: Assets/Scenes/Intro.unity
+    guid: a55d3cc7ff83ae94cb4f8b7e30b2cf58
+  - enabled: 1
     path: Assets/Scenes/Ronda1.unity
     guid: cb8381cb439b0fb4d8d19127b8ed2128
+  - enabled: 1
+    path: Assets/Scenes/TransitionSalon.unity
+    guid: b893c83dab26c2640a1195e7bab1d494
   - enabled: 1
     path: Assets/Scenes/SalonPrincipal.unity
     guid: df84252da102d3a4b904b6f97f3a46f9
   - enabled: 1
     path: Assets/Scenes/Ronda2.unity
     guid: a93fb8c7d4765544b95c2acb803dd7d5
+  - enabled: 1
+    path: Assets/Scenes/TransitionPasillo.unity
+    guid: 845897878f4aad246b9d3cfbfa88fda3
   - enabled: 0
     path: Assets/Scenes/Ronda0.unity
     guid: ee3b9ae69b0798a40b372e0a12030463
@@ -30,11 +39,14 @@ EditorBuildSettings:
     path: Assets/Scenes/Ronda3.unity
     guid: f7d2f733ac1d1d941960c0a1afed86bf
   - enabled: 1
+    path: Assets/Scenes/Ronda4Transition.unity
+    guid: 845fe6060f9046e4db3f7b5f2ebf36d0
+  - enabled: 1
     path: Assets/Scenes/Ronda4.unity
     guid: 830000afe1d7bad4aa17e1d157636ef5
   - enabled: 1
-    path: Assets/Scenes/Ronda4Transition.unity
-    guid: 845fe6060f9046e4db3f7b5f2ebf36d0
+    path: Assets/Scenes/TransitionFinal.unity
+    guid: 70a2d654ec278ed498ba3aa64da2278e
   - enabled: 1
     path: Assets/Scenes/GameOver.unity
     guid: 5dcd9e013d840a14eaef69b33fa4d56f

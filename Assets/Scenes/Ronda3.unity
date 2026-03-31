@@ -1374,7 +1374,7 @@ MonoBehaviour:
   damageToEnemyRonda1: 10
   damageToEnemyRonda2: 7
   damageToEnemyRonda3: 5
-  damageToEnemyRonda4: 3
+  damageToEnemyRonda4: 4
   damageToEnemyFallback: 10
   damageToPlayerRonda1: 5
   damageToPlayerRonda2: 5
